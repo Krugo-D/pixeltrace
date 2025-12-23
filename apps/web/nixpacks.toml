@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs-18_x", "yarn"]
+nixPkgs = ["nodejs-18_x", "yarn", "openssl"]
 
 [phases.install]
 cmds = ["yarn install"]
@@ -9,4 +9,3 @@ cmds = ["yarn workspace web build"]
 
 [start]
 cmd = "yarn workspace web start"
-

@@ -7,8 +7,10 @@ cmds = ["yarn install"]
 [phases.build]
 cmds = [
   "yarn workspace api prisma:generate",
-  "yarn workspace api build"
+  "yarn workspace api build",
+  "yarn workspace web build"
 ]
 
 [start]
 cmd = "yarn workspace api start"
+
