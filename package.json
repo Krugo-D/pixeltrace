@@ -1,0 +1,21 @@
+{
+  "name": "pixeltrace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "yarn workspace web dev",
+    "dev:api": "yarn workspace api start:dev",
+    "build": "yarn workspaces run build",
+    "db:generate": "yarn workspace api prisma:generate",
+    "db:migrate": "yarn workspace api prisma:migrate",
+    "db:studio": "yarn workspace api prisma:studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
+
