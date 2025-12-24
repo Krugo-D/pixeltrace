@@ -81,50 +81,87 @@ export default function AssetPage() {
   }
 
   return (
-    <main className="min-h-screen p-8 bg-gray-50">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Risk Assessment</h1>
-          <p className="text-gray-600">Analysis completed</p>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12">
-            <RiskGauge
-              score={analysis.overallScore || 0}
-              tier={(analysis.riskTier as RiskTier) || RiskTier.LOW}
-            />
-            <div className="flex-1 max-w-md">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Overall Risk Assessment
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                Based on our analysis across multiple risk dimensions, this image has
-                been assigned an overall risk score of {analysis.overallScore} out of 100.
-                This score is indicative and should be considered alongside your specific
-                use case and legal requirements.
-              </p>
+    <main className="min-h-screen p-4 md:p-8 bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Risk Assessment</h1>
+              <p className="text-gray-600 text-base md:text-lg">Analysis completed</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{new Date(analysis.completedAt || '').toLocaleString()}</span>
             </div>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-900">Risk Breakdown</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Overall Risk Score - Prominent */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 md:p-12">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16">
+            <div className="flex-shrink-0">
+              <RiskGauge
+                score={analysis.overallScore || 0}
+                tier={(analysis.riskTier as RiskTier) || RiskTier.LOW}
+              />
+            </div>
+            <div className="flex-1 max-w-2xl text-center lg:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                Overall Risk Assessment
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                Based on our analysis across multiple risk dimensions, this image has
+                been assigned an overall risk score of <span className="font-semibold text-gray-900">{analysis.overallScore}</span> out of 100.
+                This score is indicative and should be considered alongside your specific
+                use case and legal requirements.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm text-gray-600">Score calculated from 6 risk categories</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Risk Score Map */}
+        <RiskRadar results={analysis.results} />
+
+        {/* Risk Breakdown */}
+        <div className="space-y-4 md:space-y-6">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Risk Breakdown</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {analysis.results.map((result) => (
               <RiskCard key={result.id} result={result} />
             ))}
           </div>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">Important Notice</h3>
-          <p className="text-sm text-blue-800 leading-relaxed">
-            This risk assessment is a proof-of-concept tool designed to provide indicative
-            risk signals. It does not constitute legal advice, and results should not be
-            considered definitive. For commercial use, especially in high-visibility
-            campaigns, consult with legal counsel familiar with IP law in your jurisdiction.
-          </p>
+        {/* Disclaimer */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 md:p-8">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg md:text-xl font-semibold text-blue-900 mb-2">Important Notice</h3>
+              <p className="text-sm md:text-base text-blue-800 leading-relaxed">
+                This risk assessment is a proof-of-concept tool designed to provide indicative
+                risk signals. It does not constitute legal advice, and results should not be
+                considered definitive. For commercial use, especially in high-visibility
+                campaigns, consult with legal counsel familiar with IP law in your jurisdiction.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>

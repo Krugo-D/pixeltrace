@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+import { resolve } from 'path';
+config({ path: resolve(__dirname, '../.env') });
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -25,7 +29,8 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const port = process.env.BACKEND_PORT || process.env.PORT || 4000;
+  // Per project rules: Backend MUST run on localhost:4000 (BACKEND_PORT=4000)
+  const port = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT, 10) : 4000;
   await app.listen(port);
   console.log(`API server running on http://localhost:${port}`);
 }

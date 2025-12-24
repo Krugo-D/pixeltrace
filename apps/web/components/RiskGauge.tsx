@@ -15,9 +15,9 @@ export default function RiskGauge({ score, tier }: RiskGaugeProps) {
   };
 
   const getBgColor = () => {
-    if (tier === RiskTier.LOW) return 'bg-green-100';
-    if (tier === RiskTier.MEDIUM) return 'bg-yellow-100';
-    return 'bg-red-100';
+    if (tier === RiskTier.LOW) return 'bg-green-50 border-green-200';
+    if (tier === RiskTier.MEDIUM) return 'bg-yellow-50 border-yellow-200';
+    return 'bg-red-50 border-red-200';
   };
 
   const getStrokeColor = () => {
@@ -26,45 +26,55 @@ export default function RiskGauge({ score, tier }: RiskGaugeProps) {
     return 'stroke-red-600';
   };
 
+  const getRingColor = () => {
+    if (tier === RiskTier.LOW) return 'text-green-100';
+    if (tier === RiskTier.MEDIUM) return 'text-yellow-100';
+    return 'text-red-100';
+  };
+
   // Calculate circle progress (0-100 to 0-251.2 for circumference)
-  const circumference = 2 * Math.PI * 40; // radius = 40
+  const size = 200;
+  const radius = 80;
+  const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <div className="relative w-32 h-32">
-        <svg className="transform -rotate-90 w-32 h-32">
+    <div className="flex flex-col items-center space-y-6">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg className="transform -rotate-90" width={size} height={size}>
+          {/* Background ring */}
           <circle
-            cx="64"
-            cy="64"
-            r="40"
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
             stroke="currentColor"
-            strokeWidth="8"
+            strokeWidth="12"
             fill="none"
-            className="text-gray-200"
+            className={getRingColor()}
           />
+          {/* Progress ring */}
           <circle
-            cx="64"
-            cy="64"
-            r="40"
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
             stroke="currentColor"
-            strokeWidth="8"
+            strokeWidth="12"
             fill="none"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            className={`transition-all duration-500 ${getStrokeColor()}`}
+            className={`transition-all duration-1000 ${getStrokeColor()}`}
           />
         </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className={`text-3xl font-bold ${getColor()}`}>{score}</div>
-            <div className="text-xs text-gray-500">Risk Score</div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className={`text-6xl md:text-7xl font-bold ${getColor()} leading-none`}>
+            {score}
           </div>
+          <div className="text-sm md:text-base text-gray-500 mt-2 font-medium">Risk Score</div>
         </div>
       </div>
-      <div className={`px-4 py-2 rounded-full ${getBgColor()} ${getColor()}`}>
-        <span className="text-sm font-medium">{tier} Risk</span>
+      <div className={`px-6 py-3 rounded-full border-2 ${getBgColor()} ${getColor()}`}>
+        <span className="text-base md:text-lg font-semibold">{tier} Risk</span>
       </div>
     </div>
   );

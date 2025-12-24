@@ -9,7 +9,7 @@ const getApiUrl = () => {
     // Try to use same origin (works if using Railway's proxy or same domain)
     return window.location.origin;
   }
-  return 'http://localhost:3001';
+  return 'http://localhost:4000';
 };
 
 const API_BASE_URL = getApiUrl();
