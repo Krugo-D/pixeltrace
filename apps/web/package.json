@@ -2,9 +2,9 @@
   "name": "web",
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p ${FRONTEND_PORT:-3000}",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${FRONTEND_PORT:-3000}",
     "lint": "next lint"
   },
   "dependencies": {

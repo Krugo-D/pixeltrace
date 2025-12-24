@@ -25,7 +25,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.BACKEND_PORT || process.env.PORT || 4000;
   await app.listen(port);
   console.log(`API server running on http://localhost:${port}`);
 }
