@@ -1,4 +1,4 @@
-import { VisionLLMAdapter, LLMInsight } from '@pixeltrace/shared-types';
+import { VisionLLMAdapter, LLMInsight, RiskScores } from '@pixeltrace/shared-types';
 
 export class MockVisionLLMAdapter implements VisionLLMAdapter {
   async analyzeImage(imageUrl: string): Promise<LLMInsight> {
@@ -16,6 +16,23 @@ export class MockVisionLLMAdapter implements VisionLLMAdapter {
       styleIndicators: ['digital art style', 'modern aesthetic'],
       characterLikeness: hash % 5 === 0 ? ['possible humanoid features'] : [],
       commercialContext: ['suitable for digital marketing', 'web-friendly format'],
+    };
+  }
+
+  async analyzeImageScores(imageUrl: string): Promise<RiskScores> {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Return deterministic fake scores based on image URL hash
+    const hash = this.simpleHash(imageUrl);
+    
+    return {
+      visualSimilarity: { score: (hash % 30), confidence: 0.5 },
+      trademark: { score: (hash % 20), confidence: 0.4 },
+      copyright: { score: (hash % 25), confidence: 0.5 },
+      character: { score: (hash % 15), confidence: 0.3 },
+      trainingData: { score: (hash % 30), confidence: 0.3 },
+      commercialUsage: { score: (hash % 25), confidence: 0.5 },
     };
   }
 

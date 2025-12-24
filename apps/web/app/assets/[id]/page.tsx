@@ -1,6 +1,5 @@
 'use client';
 
-import RiskCard from '@/components/RiskCard';
 import RiskGauge from '@/components/RiskGauge';
 import RiskRadar from '@/components/RiskRadar';
 import { getAnalysis } from '@/lib/api';
@@ -152,18 +151,55 @@ export default function AssetPage() {
         </div>
 
         {/* Risk Score Map */}
-        <RiskRadar results={analysis.results} />
-
-        {/* Risk Breakdown */}
-        <div className="space-y-4 md:space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Risk Breakdown</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Risk Profile Map</h2>
+          <div className="flex justify-center">
+            <RiskRadar results={analysis.results} />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            {analysis.results.map((result) => (
-              <RiskCard key={result.id} result={result} />
-            ))}
+        </div>
+
+        {/* Risk Scores */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Risk Scores</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {analysis.results.map((result) => {
+              const categoryLabels: Record<string, string> = {
+                VISUAL_SIMILARITY: 'Visual Similarity',
+                TRADEMARK: 'Trademark',
+                COPYRIGHT: 'Copyright',
+                CHARACTER: 'Character',
+                TRAINING_DATA: 'Training Data',
+                COMMERCIAL_USAGE: 'Commercial Usage',
+              };
+              const getScoreColor = (score: number) => {
+                if (score >= 60) return 'text-red-600 bg-red-50';
+                if (score >= 30) return 'text-yellow-600 bg-yellow-50';
+                return 'text-green-600 bg-green-50';
+              };
+              const getConfidenceColor = (confidence: number) => {
+                if (confidence >= 0.7) return 'text-green-600';
+                if (confidence >= 0.4) return 'text-yellow-600';
+                return 'text-gray-500';
+              };
+              return (
+                <div key={result.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      {categoryLabels[result.category] || result.category}
+                    </h3>
+                    <span className={`px-2 py-1 rounded text-sm font-bold ${getScoreColor(result.score)}`}>
+                      {result.score}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>Confidence</span>
+                    <span className={getConfidenceColor(result.confidence)}>
+                      {Math.round(result.confidence * 100)}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

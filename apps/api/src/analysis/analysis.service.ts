@@ -1,31 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
-import {
-  OpenAIVisionAdapter,
-  VisualSimilarityAnalyzer,
-  TrademarkAnalyzer,
-  CopyrightAnalyzer,
-  CharacterAnalyzer,
-  TrainingDataAnalyzer,
-  CommercialUsageAnalyzer,
-  RiskAggregator,
-} from '@pixeltrace/risk-engine';
-import { RiskCategory } from '@pixeltrace/shared-types';
+import { OpenAIVisionAdapter, RiskAggregator } from '@pixeltrace/risk-engine';
+import { RiskCategory, RiskResult } from '@pixeltrace/shared-types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
 @Injectable()
 export class AnalysisService {
   private visionAdapter: OpenAIVisionAdapter;
-  private analyzers = [
-    new VisualSimilarityAnalyzer(),
-    new TrademarkAnalyzer(),
-    new CopyrightAnalyzer(),
-    new CharacterAnalyzer(),
-    new TrainingDataAnalyzer(),
-    new CommercialUsageAnalyzer(),
-  ];
   private aggregator = new RiskAggregator();
 
   constructor(
@@ -78,13 +61,48 @@ export class AnalysisService {
       const mimeType = asset.mimeType;
       const dataUrl = `data:${mimeType};base64,${base64}`;
 
-      // Get LLM insight
-      const insight = await this.visionAdapter.analyzeImage(dataUrl);
+      // Get risk scores directly from OpenAI
+      const scores = await this.visionAdapter.analyzeImageScores(dataUrl);
 
-      // Run all analyzers
-      const results = await Promise.all(
-        this.analyzers.map((analyzer) => analyzer.analyze(insight))
-      );
+      // Convert scores to RiskResult format
+      const results: RiskResult[] = [
+        {
+          category: RiskCategory.VISUAL_SIMILARITY,
+          score: Math.round(scores.visualSimilarity.score),
+          confidence: Math.round(scores.visualSimilarity.confidence * 100) / 100,
+          explanation: '',
+        },
+        {
+          category: RiskCategory.TRADEMARK,
+          score: Math.round(scores.trademark.score),
+          confidence: Math.round(scores.trademark.confidence * 100) / 100,
+          explanation: '',
+        },
+        {
+          category: RiskCategory.COPYRIGHT,
+          score: Math.round(scores.copyright.score),
+          confidence: Math.round(scores.copyright.confidence * 100) / 100,
+          explanation: '',
+        },
+        {
+          category: RiskCategory.CHARACTER,
+          score: Math.round(scores.character.score),
+          confidence: Math.round(scores.character.confidence * 100) / 100,
+          explanation: '',
+        },
+        {
+          category: RiskCategory.TRAINING_DATA,
+          score: Math.round(scores.trainingData.score),
+          confidence: Math.round(scores.trainingData.confidence * 100) / 100,
+          explanation: '',
+        },
+        {
+          category: RiskCategory.COMMERCIAL_USAGE,
+          score: Math.round(scores.commercialUsage.score),
+          confidence: Math.round(scores.commercialUsage.confidence * 100) / 100,
+          explanation: '',
+        },
+      ];
 
       // Aggregate results
       const aggregated = this.aggregator.aggregate(results);
