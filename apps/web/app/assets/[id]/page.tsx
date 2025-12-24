@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { getAnalysis, getAsset } from '@/lib/api';
 import RiskGauge from '@/components/RiskGauge';
 import RiskCard from '@/components/RiskCard';
+import RiskRadar from '@/components/RiskRadar';
 import { AnalysisRunResponse, RiskTier } from '@pixeltrace/shared-types';
 
 export default function AssetPage() {
