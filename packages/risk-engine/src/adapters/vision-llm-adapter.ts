@@ -1,4 +1,4 @@
-import { VisionLLMAdapter, LLMInsight } from '@pixeltrace/shared-types';
+import type { VisionLLMAdapter, LLMInsight } from '@pixeltrace/shared-types';
 
-export { VisionLLMAdapter, LLMInsight };
+export type { VisionLLMAdapter, LLMInsight };
 
