@@ -5,6 +5,7 @@ import RiskGauge from '@/components/RiskGauge';
 import RiskRadar from '@/components/RiskRadar';
 import { getAnalysis } from '@/lib/api';
 import { AnalysisRunResponse, RiskTier } from '@pixeltrace/shared-types';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -101,11 +102,22 @@ export default function AssetPage() {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Risk Assessment</h1>
               <p className="text-gray-600 text-base md:text-lg">Analysis completed</p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{new Date(analysis.completedAt || '').toLocaleString()}</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{new Date(analysis.completedAt || '').toLocaleString()}</span>
+              </div>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Upload New Image</span>
+              </Link>
             </div>
           </div>
         </div>
