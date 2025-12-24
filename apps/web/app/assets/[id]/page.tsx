@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { getAnalysis, getAsset } from '@/lib/api';
-import RiskGauge from '@/components/RiskGauge';
 import RiskCard from '@/components/RiskCard';
+import RiskGauge from '@/components/RiskGauge';
 import RiskRadar from '@/components/RiskRadar';
+import { getAnalysis } from '@/lib/api';
 import { AnalysisRunResponse, RiskTier } from '@pixeltrace/shared-types';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function AssetPage() {
   const params = useParams();
@@ -16,7 +16,7 @@ export default function AssetPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | null = null;
 
     const fetchAnalysis = async () => {
       try {
@@ -26,25 +26,35 @@ export default function AssetPage() {
           setLoading(false);
           // Stop polling if analysis is complete
           if (data.completedAt) {
-            if (interval) clearInterval(interval);
+            if (interval) {
+              clearInterval(interval);
+              interval = null;
+            }
+            return;
           }
-        } else {
-          // Analysis not started yet, poll every 2 seconds
-          if (!interval) {
-            interval = setInterval(fetchAnalysis, 2000);
-          }
+        }
+        
+        // If we get here, analysis doesn't exist or isn't complete yet
+        // Set up polling if not already polling
+        if (!interval) {
+          interval = setInterval(fetchAnalysis, 2000);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load analysis');
         setLoading(false);
-        if (interval) clearInterval(interval);
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
       }
     };
 
     fetchAnalysis();
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+      }
     };
   }, [id]);
 
