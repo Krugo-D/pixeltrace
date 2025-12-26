@@ -196,24 +196,24 @@ export class AnalysisService {
       await this.updateStatus(analysisRunId, 'SAVING', 'Saving analysis results...');
 
       // Save results to database
-      await this.prisma.analysisRun.update({
-        where: { id: analysisRunId },
-        data: {
-          completedAt: new Date(),
-          overallScore: aggregated.overallScore,
-          riskTier: aggregated.riskTier,
-          status: 'COMPLETED',
-          statusMessage: 'Analysis completed successfully',
-          results: {
-            create: aggregated.results.map((r) => ({
-              category: r.category,
-              score: r.score,
-              confidence: r.confidence,
-              explanation: r.explanation,
-            })),
-          },
-        },
-      });
+          await this.prisma.analysisRun.update({
+            where: { id: analysisRunId },
+            data: {
+              completedAt: new Date(),
+              overallScore: aggregated.overallScore,
+              riskTier: aggregated.riskTier,
+              status: 'COMPLETED',
+              statusMessage: 'Analysis completed successfully',
+              results: {
+                create: aggregated.results.map((r: RiskResult) => ({
+                  category: r.category,
+                  score: r.score,
+                  confidence: r.confidence,
+                  explanation: r.explanation,
+                })),
+              },
+            },
+          });
       
       console.log('[AnalysisService] Analysis completed successfully for run:', analysisRunId);
     } catch (error) {

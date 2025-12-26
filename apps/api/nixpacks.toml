@@ -6,6 +6,8 @@ cmds = ["yarn install"]
 
 [phases.build]
 cmds = [
+  "yarn workspace @pixeltrace/shared-types build",
+  "yarn workspace @pixeltrace/risk-engine build",
   "yarn workspace api prisma:generate",
   "yarn workspace api build"
 ]

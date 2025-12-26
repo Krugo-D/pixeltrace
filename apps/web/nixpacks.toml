@@ -5,7 +5,10 @@ nixPkgs = ["nodejs-18_x", "yarn", "openssl"]
 cmds = ["yarn install"]
 
 [phases.build]
-cmds = ["yarn workspace web build"]
+cmds = [
+  "yarn workspace @pixeltrace/shared-types build",
+  "yarn workspace web build"
+]
 
 [start]
 cmd = "yarn workspace web start"

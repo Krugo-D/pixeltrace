@@ -48,7 +48,7 @@ export class AssetsService {
       riskTier: analysisRun.riskTier as any,
       status: analysisRun.status || 'PENDING',
       statusMessage: analysisRun.statusMessage || null,
-      results: analysisRun.results.map((r) => ({
+      results: analysisRun.results.map((r: any) => ({
         id: r.id,
         category: r.category as any,
         score: r.score,
