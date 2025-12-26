@@ -12,5 +12,6 @@ cmds = [
 ]
 
 [start]
-cmd = "yarn workspace api start"
+cmd = "yarn start"
+
 

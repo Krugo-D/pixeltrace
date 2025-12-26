@@ -24,8 +24,16 @@ export async function uploadImage(file: File): Promise<{ id: string }> {
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || 'Upload failed');
+    let errorMessage = 'Upload failed';
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorData.error || errorMessage;
+    } catch {
+      // If JSON parsing fails, try text
+      const errorText = await response.text();
+      errorMessage = errorText || errorMessage;
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();

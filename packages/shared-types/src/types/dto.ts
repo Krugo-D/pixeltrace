@@ -22,6 +22,9 @@ export interface AnalysisRunResponse {
   completedAt: string | null;
   overallScore: number | null;
   riskTier: RiskTier | null;
+  status: string;
+  statusMessage: string | null;
   results: RiskResultDTO[];
 }
+
 

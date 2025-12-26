@@ -1,4 +1,4 @@
-import { VisionLLMAdapter, LLMInsight, RiskScores } from '@pixeltrace/shared-types';
+import { LLMInsight, RiskScores, VisionLLMAdapter } from '@pixeltrace/shared-types';
 
 export class MockVisionLLMAdapter implements VisionLLMAdapter {
   async analyzeImage(imageUrl: string): Promise<LLMInsight> {

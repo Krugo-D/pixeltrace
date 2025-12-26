@@ -11,4 +11,4 @@ cmds = [
 ]
 
 [start]
-cmd = "yarn workspace api start"
+cmd = "yarn workspace api prisma:migrate:deploy && yarn workspace api start"

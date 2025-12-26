@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AssetResponse, AnalysisRunResponse } from '@pixeltrace/shared-types';
 
 @Injectable()
 export class AssetsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private prisma: PrismaService) {
+    console.log('[AssetsService] Constructor called');
+    console.log('[AssetsService] prisma:', this.prisma ? 'DEFINED' : 'UNDEFINED');
+  }
 
   async getAsset(id: string): Promise<AssetResponse> {
     const asset = await this.prisma.asset.findUnique({
@@ -43,6 +46,8 @@ export class AssetsService {
       completedAt: analysisRun.completedAt?.toISOString() || null,
       overallScore: analysisRun.overallScore,
       riskTier: analysisRun.riskTier as any,
+      status: analysisRun.status || 'PENDING',
+      statusMessage: analysisRun.statusMessage || null,
       results: analysisRun.results.map((r) => ({
         id: r.id,
         category: r.category as any,
@@ -53,4 +58,5 @@ export class AssetsService {
     };
   }
 }
+
 

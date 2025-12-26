@@ -27,6 +27,8 @@ model AnalysisRun {
   completedAt  DateTime?
   overallScore Int?
   riskTier     String?
+  status       String    @default("PENDING")
+  statusMessage String?  @db.Text
 
   asset   Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
   results RiskResult[]
@@ -46,4 +48,5 @@ model RiskResult {
 
   @@map("risk_results")
 }
+
 

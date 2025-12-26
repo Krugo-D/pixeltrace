@@ -1,5 +1,7 @@
 'use client';
 
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import RiskGauge from '@/components/RiskGauge';
 import RiskRadar from '@/components/RiskRadar';
 import { getAnalysis } from '@/lib/api';
@@ -60,42 +62,105 @@ export default function AssetPage() {
 
   if (loading && !analysis) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="text-gray-600">Analyzing image...</p>
-          <p className="text-sm text-gray-400">This may take a few moments</p>
+      <main className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="text-gray-600">Analyzing image...</p>
+            <p className="text-sm text-gray-400">This may take a few moments</p>
+          </div>
         </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  // Show progress if analysis exists but isn't complete
+  if (analysis && !analysis.completedAt) {
+    const getStatusDisplay = (status: string) => {
+      const statusMap: Record<string, { label: string; icon: string }> = {
+        PENDING: { label: 'Initializing', icon: '⚡' },
+        READING_FILE: { label: 'Ingesting data', icon: '📥' },
+        ANALYZING: { label: 'Analyzing footprint', icon: '🔍' },
+        PROCESSING: { label: 'Computing risk', icon: '🧠' },
+        SAVING: { label: 'Finalizing', icon: '✅' },
+        FAILED: { label: 'Failed', icon: '❌' },
+      };
+      return statusMap[status] || { label: 'Processing', icon: '🔄' };
+    };
+
+    const statusInfo = getStatusDisplay(analysis.status || 'PENDING');
+    const isFailed = analysis.status === 'FAILED';
+
+    return (
+      <main className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center py-12">
+          <div className="max-w-md w-full glass-panel p-8">
+            <div className="text-center space-y-6">
+              {!isFailed && (
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
+              )}
+              <div className="space-y-2">
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-3xl">{statusInfo.icon}</span>
+                  <h2 className="text-2xl font-bold text-gray-900">{statusInfo.label}</h2>
+                </div>
+                {analysis.statusMessage && (
+                  <p className="text-gray-600 mt-2">{analysis.statusMessage}</p>
+                )}
+              </div>
+              {isFailed && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800">
+                    The analysis encountered an error. Please try uploading the image again.
+                  </p>
+                </div>
+              )}
+              <div className="pt-4 border-t border-gray-200">
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  <span>Back to upload</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <p className="text-red-600">{error}</p>
+      <main className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center space-y-4">
+            <p className="text-red-600 font-medium">{error}</p>
+            <Link href="/" className="text-slate-500 hover:text-slate-900 underline text-sm">
+              Return to home
+            </Link>
+          </div>
         </div>
+        <Footer />
       </main>
     );
   }
 
-  if (!analysis || !analysis.completedAt) {
-    return (
-      <main className="min-h-screen flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="text-gray-600">Analysis in progress...</p>
-        </div>
-      </main>
-    );
-  }
 
   return (
-    <main className="min-h-screen p-4 md:p-8 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+    <main className="min-h-screen">
+      <Header />
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8 py-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+        <div className="glass-panel p-6 md:p-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Risk Assessment</h1>
@@ -110,9 +175,9 @@ export default function AssetPage() {
               </div>
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors font-medium text-sm"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>Upload New Image</span>
@@ -223,6 +288,7 @@ export default function AssetPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }
