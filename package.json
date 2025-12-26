@@ -13,9 +13,9 @@
     "start": "concurrently \"yarn start:api\" \"yarn start:web\"",
     "start:api": "yarn workspace api start",
     "start:web": "yarn workspace web start",
-    "build": "npm install -g yarn && yarn install && yarn workspaces run build",
-    "build:api": "npm install -g yarn && yarn install && yarn workspace api prisma:generate && yarn workspace api build",
-    "build:web": "npm install -g yarn && yarn install && yarn workspace web build",
+    "build": "yarn workspaces run build",
+    "build:api": "yarn workspace api prisma:generate && yarn workspace api build",
+    "build:web": "yarn workspace web build",
     "db:generate": "yarn workspace api prisma generate",
     "db:migrate": "yarn workspace api prisma migrate dev",
     "db:studio": "yarn workspace api prisma studio"
